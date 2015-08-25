@@ -11,6 +11,13 @@ This is the repository for the docker based RPM builder that is used by ARGOeu. 
 cd docker/centos-6-epel && docker build --pull -t epel6dev .
 ```
 
+# Jenkins configuration
 
+Clone the repository to ```${JENKINS_HOME}``` and add the following ```execute shell``` ```build step```:
+
+```
+cd $JENKINS_HOME/jobs/$JOB_NAME/workspace/ && \
+$JENKINS_HOME/jenkins-docker-rpm-builder/rpm-builder.sh
+```
 
 
