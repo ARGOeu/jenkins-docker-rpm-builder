@@ -25,7 +25,7 @@ echo "${TAG} Package: ${PKG_NAME}-${PKG_VERSION}"
 GIT_COMMIT=${GIT_COMMIT:-`git log -1 --format="%H"`}
 GIT_COMMIT_HASH=`echo ${GIT_COMMIT} | cut -c1-7`
 _GIT_COMMIT_DATE=`git show -s --format=%ci ${GIT_COMMIT_HASH}`
-GIT_COMMIT_DATE=`date -d "${_GIT_COMMIT_DATE}" "+%Y%m%d"`
+GIT_COMMIT_DATE=`date -d "${_GIT_COMMIT_DATE}" "+%Y%m%d%H%M%S"`
 
 echo "${TAG} Set release to ${GIT_COMMIT_DATE}.${GIT_COMMIT_HASH}%{?dist}"
 sed -i '/^Release/c\Release: %(echo $GIT_COMMIT_DATE).%(echo $GIT_COMMIT_HASH)%{?dist}' *.spec
