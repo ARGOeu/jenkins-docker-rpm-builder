@@ -34,8 +34,9 @@ make sources && mv *.tar.gz ${TMPDIR}/
 
 cd ${TMPDIR} && tar -xzf *.tar.gz
 docker run -i -e "GIT_COMMIT_DATE=${GIT_COMMIT_DATE}" -e "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" \
-			-v ${TMPDIR}:/tmp/rpmbuild ${DOCKER_IMG}:latest \
+			-v ${TMPDIR}:/tmp/rpmbuild  \
 			-v ${HOME}/.certificate:/root/.certificate \
+			${DOCKER_IMG}:latest \
 			sh -c "cd /tmp/rpmbuild && chown root:root *.tar.gz && \
 				   find . -name '*.spec' -exec yum-builddep {} \; && \
 				   rpmbuild -ta --define='dist .el6' *gz && \
