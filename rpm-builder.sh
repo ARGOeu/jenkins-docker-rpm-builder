@@ -40,7 +40,7 @@ docker run -i -e "GIT_COMMIT_DATE=${GIT_COMMIT_DATE}" -e "GIT_COMMIT_HASH=${GIT_
 				   find . -name '*.spec' -exec yum-builddep {} \; && \
 				   rpmbuild -ta --define='dist .el6' *gz && \
 				   cd /root/rpmbuild/RPMS && \
-				   find . -name '*.rpm' -exec /root/scripts/koji.sh ${KOJI_TAG} {} \;"
+				   find . -name '*.rpm' -exec /root/scripts/koji-upload.sh ${KOJI_TAG} {} \;"
 
 echo "${TAG} Removing work dir"
 if [[ ${TMPDIR} == /tmp* ]]; then rm -rf ${TMPDIR} ;fi
