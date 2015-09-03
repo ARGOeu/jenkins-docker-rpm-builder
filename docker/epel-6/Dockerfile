@@ -17,3 +17,4 @@ RUN yum install koji
 RUN yum install ca_HellasGrid-Root
 RUN yum install ca_HellasGrid-CA-2006
 ADD files/etc/koji.conf /etc/koji.conf
+ADD files/scripts/koji-upload.sh /root/scripts/koji-upload.sh
