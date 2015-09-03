@@ -1,9 +1,10 @@
 #!/bin/bash
 
 DOCKER_IMG="epel6dev"
-TAG="[ARGO RPM BULDER]"
+TAG="[ARGO RPM BUILDER]"
+KOJI_TAG="centos6-arstats-devel"
 
-[ -d .git ] || { echo >&2 "${TAG} This is not a git repository.  Aborting."; exit 1; }
+[ -d .git ] || { echo >&2 "${TAG} This is not a git repository. Aborting."; exit 1; }
 [ -f *.spec ] || { echo >&2 "${TAG} No spec file found.  Aborting."; exit 1; }
 spec_files=`ls *.spec |wc -l`; [ "$spec_files" -eq "1" ] || { echo >&2 "${TAG} I expect to find exactly 1 spec file.  Aborting."; exit 1; }
 command -v mktemp >/dev/null 2>&1 || { echo >&2 "${TAG} I require mktemp but it's not installed.  Aborting."; exit 1; }
@@ -34,14 +35,12 @@ make sources && mv *.tar.gz ${TMPDIR}/
 cd ${TMPDIR} && tar -xzf *.tar.gz
 docker run -i -e "GIT_COMMIT_DATE=${GIT_COMMIT_DATE}" -e "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" \
 			-v ${TMPDIR}:/tmp/rpmbuild ${DOCKER_IMG}:latest \
+			-v ${HOME}/.certificate:/root/.certificate \
 			sh -c "cd /tmp/rpmbuild && chown root:root *.tar.gz && \
 				   find . -name '*.spec' -exec yum-builddep {} \; && \
 				   rpmbuild -ta --define='dist .el6' *gz && \
-				   cp -Rp /root/rpmbuild/RPMS /tmp/rpmbuild/"
-echo "${TAG} Copy RPMs"
+				   cd /root/rpmbuild/RPMS && \
+				   find . -name '*.rpm' -exec /root/scripts/koji.sh ${KOJI_TAG} {} \;"
 
-[ -d ${TMPDIR}/RPMS ] || { echo >&2 "RPM folder not found.  Aborting."; exit 1; }
-cp -Rp ${TMPDIR}/RPMS ./
-
-echo "${TAG} Remove work dir"
+echo "${TAG} Removing work dir"
 if [[ ${TMPDIR} == /tmp* ]]; then rm -rf ${TMPDIR} ;fi
