@@ -10,7 +10,6 @@ BRANCH_PROD="origin/master"
 [ -d .git ] || { echo >&2 "${TAG} This is not a git repository. Aborting."; exit 1; }
 [ -f *.spec ] || { echo >&2 "${TAG} No spec file found.  Aborting."; exit 1; }
 spec_files=`ls *.spec |wc -l`; [ "$spec_files" -eq "1" ] || { echo >&2 "${TAG} I expect to find exactly 1 spec file.  Aborting."; exit 1; }
-# command -v mktemp >/dev/null 2>&1 || { echo >&2 "${TAG} I require mktemp but it's not installed.  Aborting."; exit 1; }
 command -v docker >/dev/null 2>&1 || { echo >&2 "${TAG} I require docker but it's not installed.  Aborting."; exit 1; }
 [ `docker images | grep ${DOCKER_IMG} |awk '{print $1}'` == "${DOCKER_IMG}" ] || { echo >&2 "${TAG} I require docker image ${DOCKER_IMG}.  Aborting."; exit 1; }
 [ ! -z ${GIT_BRANCH+x} ] || { echo >&2 "${TAG} GIT_BRANCH is not set. Aborting."; exit 1; }
@@ -22,7 +21,7 @@ PKG_VERSION=`cat *.spec| grep Version |awk '{print $2}' | head -1`
 echo "${TAG} Package: ${PKG_NAME}-${PKG_VERSION}"
 
 # Retrieve the date of the last commit
-GIT_COMMIT is made available from Jenkins. If not, find git hash from the repository
+# GIT_COMMIT is made available from Jenkins. If not, find git hash from the repository
 GIT_COMMIT=${GIT_COMMIT:-`git log -1 --format="%H"`}
 GIT_COMMIT_HASH=`echo ${GIT_COMMIT} | cut -c1-7`
 _GIT_COMMIT_DATE=`git show -s --format=%ci ${GIT_COMMIT_HASH}`
