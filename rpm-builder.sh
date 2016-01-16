@@ -4,7 +4,7 @@ DOCKER_IMG="centos-epel6dev-argoeu"
 TAG="[ARGO RPM BUILDER]"
 KOJI_TAG_DEVEL="centos6-arstats-devel"
 KOJI_TAG_PROD="centos6-arstats"
-KOJI_CERT_DIR="${HOME}/dockers/.certificate"
+KOJI_CERT_DIR="${HOME}/dockers/argoeu/.certificate"
 BRANCH_PROD="origin/master"
 
 [ -d .git ] || { echo >&2 "${TAG} This is not a git repository. Aborting."; exit 1; }
