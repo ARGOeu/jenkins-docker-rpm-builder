@@ -6,6 +6,8 @@ KOJI_TAG_DEVEL="centos6-arstats-devel"
 KOJI_TAG_PROD="centos6-arstats"
 KOJI_CERT_DIR="${HOME}/dockers/argoeu/.certificate"
 BRANCH_PROD="origin/master"
+JENKINS_UID=`id -u`
+JENKINS_GID=`id -g`
 
 [ -d .git ] || { echo >&2 "${TAG} This is not a git repository. Aborting."; exit 1; }
 [ -f *.spec ] || { echo >&2 "${TAG} No spec file found.  Aborting."; exit 1; }
@@ -46,4 +48,5 @@ docker run --rm -i -e "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" -e "GIT_COMMIT_DATE=$
                                    rpmbuild -ta --define='dist .el6' *gz && \
                                    cd /root/rpmbuild/RPMS &&  \
                                    find . -name '*.rpm' -exec echo ${KOJI_TAG} {} \; && \
-                                   find . -name '*.rpm' -exec /root/scripts/koji-upload.sh ${KOJI_TAG} {} \;"
+                                   find . -name '*.rpm' -exec /root/scripts/koji-upload.sh ${KOJI_TAG} {} \; &&\
+                                   cd /mnt && chown -R  $JENKINS_UID:$JENKINS_GID ."
