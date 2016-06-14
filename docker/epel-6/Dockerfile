@@ -28,3 +28,5 @@ RUN yum install openssl-devel libcurl-devel libxml2-devel expat-devel perl-ExtUt
 RUN cd /tmp && curl -O https://www.kernel.org/pub/software/scm/git/git-2.6.4.tar.gz && tar xzf git-2.6.4.tar.gz
 WORKDIR /tmp/git-2.6.4
 RUN ./configure --without-tcltk --prefix=/usr/local && make && make install
+WORKDIR /root
+RUN yum install mongodb-org
