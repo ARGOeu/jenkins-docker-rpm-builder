@@ -2,12 +2,13 @@
 
 DOCKER_IMG="centos-epel6dev-argoeu"
 TAG="[ARGO RPM BUILDER]"
-KOJI_TAG_DEVEL="centos6-arstats-devel"
-KOJI_TAG_PROD="centos6-arstats"
-KOJI_CERT_DIR="${HOME}/dockers/argoeu/.certificate"
+RPM_REPO_TAG_DEVEL="devel"
+RPM_REPO_TAG_PROD="prod"
+RPM_REPO_CERT_DIR="${HOME}/dockers/argoeu/.certificate"
 BRANCH_PROD="origin/master"
 JENKINS_UID=`id -u`
 JENKINS_GID=`id -g`
+JENKINS_KEY="/var/lib/jenkins/.ssh/id_rsa_grnetci"
 
 [ -d .git ] || { echo >&2 "${TAG} This is not a git repository. Aborting."; exit 1; }
 [ -f *.spec ] || { echo >&2 "${TAG} No spec file found.  Aborting."; exit 1; }
@@ -29,24 +30,26 @@ GIT_COMMIT_HASH=`echo ${GIT_COMMIT} | cut -c1-7`
 _GIT_COMMIT_DATE=`git show -s --format=%ci ${GIT_COMMIT_HASH}`
 GIT_COMMIT_DATE=`date -d "${_GIT_COMMIT_DATE}" "+%Y%m%d%H%M%S"`
 
-KOJI_TAG=${KOJI_TAG_PROD}
+RPM_REPO_TAG=${RPM_REPO_TAG_PROD}
 
 if [ "$GIT_BRANCH" != "$BRANCH_PROD" ]; then
-        echo "${TAG} Set release to ${GIT_COMMIT_DATE}.${GIT_COMMIT_HASH}%{?dist}"
-        sed -i '/^Release/c\Release: %(echo $GIT_COMMIT_DATE).%(echo $GIT_COMMIT_HASH)%{?dist}' *.spec
-        KOJI_TAG=${KOJI_TAG_DEVEL}
+	echo "${TAG} Set release to ${GIT_COMMIT_DATE}.${GIT_COMMIT_HASH}%{?dist}"
+	sed -i '/^Release/c\Release: %(echo $GIT_COMMIT_DATE).%(echo $GIT_COMMIT_HASH)%{?dist}' *.spec
+	RPM_REPO_TAG=${RPM_REPO_TAG_DEVEL}
 fi
 
 docker run --rm -i -e "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" -e "GIT_COMMIT_DATE=${GIT_COMMIT_DATE}" \
-                        -v ${WORKSPACE}:/mnt  \
-                        -v ${KOJI_CERT_DIR}:/root/.certificate \
-                        ${DOCKER_IMG}:latest \
-                        sh -c "cd /mnt && make sources && \
-                                   TMPDIR=\`mktemp -d /tmp/rpmbuild.XXXXXXXXXX\` && \
-                                   mv *.tar.gz \${TMPDIR} && cd \${TMPDIR} && tar -xzf *.tar.gz && \
-                                   find . -name '*.spec' -exec yum-builddep {} \; && \
-                                   rpmbuild -ta --define='dist .el6' *gz && \
-                                   cd /root/rpmbuild/RPMS &&  \
-                                   find . -name '*.rpm' -exec echo ${KOJI_TAG} {} \; && \
-                                   find . -name '*.rpm' -exec /root/scripts/koji-upload.sh ${KOJI_TAG} {} \; &&\
-                                   cd /mnt && chown -R  $JENKINS_UID:$JENKINS_GID ."
+				-v ${WORKSPACE}:/mnt  \
+				-v ${RPM_REPO_CERT_DIR}:/root/.certificate \
+				-v ${JENKINS_KEY}:/root/.ssh/id_rsa \
+				${DOCKER_IMG}:latest \
+				sh -c "cd /mnt && make sources && \
+					TMPDIR=\`mktemp -d /tmp/rpmbuild.XXXXXXXXXX\` && \
+					mv *.tar.gz \${TMPDIR} && cd \${TMPDIR} && tar -xzf *.tar.gz && \
+					find . -name '*.spec' -exec yum-builddep {} \; && \
+					rpmbuild -ta --define='dist .el6' *gz && \
+					cd /root/rpmbuild/RPMS &&  \
+					find . -name '*.rpm' -exec echo ${RPM_REPO_TAG} {} \; && \
+					find . -name '*.rpm' -exec /root/scripts/scp-upload.sh ${RPM_REPO_TAG} {} \; &&\
+					cd /mnt && chown -R  $JENKINS_UID:$JENKINS_GID ."
+

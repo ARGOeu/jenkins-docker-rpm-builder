@@ -14,10 +14,13 @@ RUN yum install yum-utils
 RUN yum install apache-maven
 RUN yum install golang
 RUN yum install koji
+RUN yum install openssh-clients
 RUN yum install ca_HellasGrid-Root
 RUN yum install ca_HellasGrid-CA-2006
 ADD files/etc/koji.conf /etc/koji.conf
+ADD files/etc/rpm-repo.conf /root/scripts/rpm-repo.conf
 ADD files/scripts/koji-upload.sh /root/scripts/koji-upload.sh
+ADD files/scripts/scp-upload.sh /root/scripts/scp-upload.sh
 RUN yum install python-pip python-coverage
 RUN pip install pytest mock
 RUN pip install pytest-cov
