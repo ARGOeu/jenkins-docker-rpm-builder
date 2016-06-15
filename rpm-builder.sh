@@ -33,8 +33,8 @@ GIT_COMMIT_DATE=`date -d "${_GIT_COMMIT_DATE}" "+%Y%m%d%H%M%S"`
 RPM_REPO_TAG=${RPM_REPO_TAG_PROD}
 
 if [ "$GIT_BRANCH" != "$BRANCH_PROD" ]; then
-        echo "${TAG} Set release to ${GIT_COMMIT_DATE}.${GIT_COMMIT_HASH}%{?dist}"
-        sed -i '/^Release/c\Release: %(echo $GIT_COMMIT_DATE).%(echo $GIT_COMMIT_HASH)%{?dist}' *.spec
+	echo "${TAG} Set release to ${GIT_COMMIT_DATE}.${GIT_COMMIT_HASH}%{?dist}"
+	sed -i '/^Release/c\Release: %(echo $GIT_COMMIT_DATE).%(echo $GIT_COMMIT_HASH)%{?dist}' *.spec
 	RPM_REPO_TAG=${RPM_REPO_TAG_DEVEL}
 fi
 
