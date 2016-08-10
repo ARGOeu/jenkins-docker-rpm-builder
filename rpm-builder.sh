@@ -1,6 +1,9 @@
 #!/bin/bash
 
 DOCKER_IMG="centos-epel6dev-argoeu"
+if [ ! -z $1 ]; then
+	DOCKER_IMG=$1
+fi
 TAG="[ARGO RPM BUILDER]"
 RPM_REPO_TAG_DEVEL="devel"
 RPM_REPO_TAG_PROD="prod"
