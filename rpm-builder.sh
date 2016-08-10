@@ -1,9 +1,16 @@
 #!/bin/bash
 
 DOCKER_IMG="centos-epel6dev-argoeu"
+RPM_DIST="el6"
+
 if [ ! -z $1 ]; then
 	DOCKER_IMG=$1
+
+	if [ ! -z $2 ]; then
+		RPM_DIST=$2
+	fi
 fi
+
 TAG="[ARGO RPM BUILDER]"
 RPM_REPO_TAG_DEVEL="devel"
 RPM_REPO_TAG_PROD="prod"
@@ -50,7 +57,7 @@ docker run --rm -i -e "GIT_COMMIT_HASH=${GIT_COMMIT_HASH}" -e "GIT_COMMIT_DATE=$
 					TMPDIR=\`mktemp -d /tmp/rpmbuild.XXXXXXXXXX\` && \
 					mv *.tar.gz \${TMPDIR} && cd \${TMPDIR} && tar -xzf *.tar.gz && \
 					find . -name '*.spec' -exec yum-builddep {} \; && \
-					rpmbuild -ta --define='dist .el6' *gz && \
+					rpmbuild -ta --define='dist .${RPM_DIST}' *gz && \
 					cd /root/rpmbuild/RPMS &&  \
 					find . -name '*.rpm' -exec echo ${RPM_REPO_TAG} {} \; && \
 					find . -name '*.rpm' -exec /root/scripts/scp-upload.sh ${RPM_REPO_TAG} {} \; &&\
