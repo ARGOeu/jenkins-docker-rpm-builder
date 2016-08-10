@@ -1,4 +1,4 @@
-FROM centos:centos6
+FROM centos:centos7
 MAINTAINER Christos Kanellopoulos skanct@gmail.com
 ADD files/etc/yum.conf /etc/
 RUN sed -i.original -e 's/^/#/' /etc/yum.repos.d/*.repo
@@ -26,10 +26,4 @@ RUN pip install pytest mock
 RUN pip install pytest-cov
 RUN yum install git
 RUN yum install pymongo
-RUN yum remove git
-RUN yum install openssl-devel libcurl-devel libxml2-devel expat-devel perl-ExtUtils-MakeMaker gettext
-RUN cd /tmp && curl -O https://www.kernel.org/pub/software/scm/git/git-2.6.4.tar.gz && tar xzf git-2.6.4.tar.gz
-WORKDIR /tmp/git-2.6.4
-RUN ./configure --without-tcltk --prefix=/usr/local && make && make install
-WORKDIR /root
 RUN yum install mongodb-org
