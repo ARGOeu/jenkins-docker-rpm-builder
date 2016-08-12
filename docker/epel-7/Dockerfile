@@ -13,7 +13,10 @@ RUN yum install rpm-build
 RUN yum install yum-utils
 RUN yum install apache-maven
 RUN yum install golang
-RUN yum install koji
+RUN yum install wget 
+RUN wget https://storage.googleapis.com/golang/go1.5.4.linux-amd64.tar.gz 
+RUN tar -C /usr/local -xzf go1.5.4.linux-amd64.tar.gz
+env PATH=/usr/local/go/bin:$PATH
 RUN yum install openssh-clients
 ADD files/etc/rpm-repo.conf /root/scripts/rpm-repo.conf
 ADD files/scripts/scp-upload.sh /root/scripts/scp-upload.sh

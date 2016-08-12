@@ -15,7 +15,6 @@ RUN yum install apache-maven
 RUN yum install golang
 RUN yum install koji
 RUN yum install openssh-clients
-ADD files/etc/koji.conf /etc/koji.conf
 ADD files/etc/rpm-repo.conf /root/scripts/rpm-repo.conf
 ADD files/scripts/scp-upload.sh /root/scripts/scp-upload.sh
 RUN yum install python-pip python-coverage
