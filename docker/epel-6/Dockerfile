@@ -12,7 +12,6 @@ RUN yum install tar
 RUN yum install rpm-build
 RUN yum install yum-utils
 RUN yum install apache-maven
-RUN yum install koji
 RUN yum install openssh-clients
 ADD files/etc/rpm-repo.conf /root/scripts/rpm-repo.conf
 ADD files/scripts/scp-upload.sh /root/scripts/scp-upload.sh
