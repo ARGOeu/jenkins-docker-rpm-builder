@@ -12,7 +12,6 @@ RUN yum install tar
 RUN yum install rpm-build
 RUN yum install yum-utils
 RUN yum install apache-maven
-RUN yum install golang
 RUN yum install wget 
 RUN wget  https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz
 RUN tar -C /usr/local -xzf go1.7.linux-amd64.tar.gz
