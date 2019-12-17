@@ -1,0 +1,14 @@
+# section containing the common options
+[Common]
+logfile=remote.sync.log
+# possible values: INFO, DEBUG, ERROR, WARNING
+loglevel=INFO
+usersfile=irods.remote.users
+dnsfile=irods.DNs.map
+
+[EUDAT]
+host=https://unity.eudat-aai.fz-juelich.de:8443/rest-admin/v1/
+username=
+password=
+carootdn= /C=DE/L=Juelich/O=FZJ/OU=JSC
+ns_prefix=eudat_

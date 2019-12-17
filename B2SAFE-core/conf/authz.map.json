@@ -1,0 +1,10 @@
+{
+"assertion 1":
+	{ "subject":
+		[ "*" ],
+	  "action":
+		[ "*" ],
+	  "target":
+		[ "*" ]
+	}
+}
