@@ -6,6 +6,10 @@ ADD files/etc/rpm/macros.drb /etc/rpm/macros.drb
 ADD files/etc/argo.repo /etc/yum.repos.d/argo.repo
 ADD files/tmp /tmp
 RUN rpm --import /tmp/*.pub
+RUN useradd jenkins
+RUN mkdir -p /home/jenkins/workspace/go/src
+RUN export GOROOT=/usr/local/go
+RUN export GOPATH=/home/jenkins/workspace/go
 RUN yum clean metadata
 RUN yum update
 RUN yum install -y gcc
